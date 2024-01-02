@@ -138,6 +138,13 @@ for sum < 1000 {
 // 无限循环
 for {
 }
+
+// Range, 可遍历切片或映射
+// i: 元素的下标，v: 下标所对应元素的副本
+var pow = []int{1, 2, 4, 8, 16, 32, 64, 128}
+for i, v := range pow {
+	fmt.Printf("2**%d = %d\n", i, v)
+}
 ```
 
 ## 条件判断
@@ -255,10 +262,107 @@ s = s[:4]   // len=4 cap=6 [2 3 5 7]
 s = s[2:]   // len=2 cap=4 [5 7]
 ```
 
-7. 切片的零值是 nil。nil 切片的长度和容量为 0 且没有底层数组
+7. 切片的零值是 `nil`。`nil` 切片的长度和容量为 0 且没有底层数组
 
 ## 映射
 
-## 方法和接口
+1. 映射将键映射到值。
+2. 映射的零值为 `nil`. `nil` 映射既没有键，也不能添加键。
+3. `make` 函数会返回给定类型的映射，并将其初始化备用。
+
+```go
+type Vertex struct {
+	Lat, Long float64
+}
+
+var n = make(map[string]Vertex)
+n["Bell Labs"] = Vertex{
+	40.68433, -74.39967,
+}
+
+// 文法
+var m = map[string]Vertex{
+	"Bell Labs": Vertex{
+		40.68433, -74.39967,
+	},
+	"Google": Vertex{
+		37.42202, -122.08408,
+	},
+}
+
+// 若顶级类型只是一个类型名，你可以在文法的元素中省略它
+var m = map[string]Vertex{
+	"Bell Labs": {40.68433, -74.39967},
+	"Google":    {37.42202, -122.08408},
+}
+
+m := make(map[string]int)
+
+// 插入/修改 m[key]
+m["Answer"] = 42
+fmt.Println("The value:", m["Answer"])
+
+// 删除元素 delete(m, key)
+delete(m, "Answer")
+fmt.Println("The value:", m["Answer"])
+
+// 通过双赋值检测某个键是否存在
+// 若 key 在 m 中，ok 为 true ；否则，ok 为 false。若 key 不在映射中，那么 elem 是该映射元素类型的零值
+// 若 elem 或 ok 还未声明，你可以使用短变量声明 elem, ok := m[key]
+v, ok := m["Answer"]
+fmt.Println("The value:", v, "Present?", ok)
+```
+
+## 方法
+
+### 方法
+
+1. 方法只是个带接收者参数的函数。
+2. **接收者的类型定义和方法声明必须在同一包内；不能为内建类型声明方法**。
+
+```go
+type Vertex struct {
+	X, Y float64
+}
+
+// Abs 方法拥有一个名为 v，类型为 Vertex 的接收者
+func (v Vertex) Abs() float64 {
+	return math.Sqrt(v.X*v.X + v.Y*v.Y)
+}
+
+// 对于某类型 T，接收者的类型可以用 *T 的文法。（此外，T 不能是像 *int 这样的指针。）
+// 若使用值接收者，那么 Scale 方法会对原始 Vertex 值的副本进行操作。
+func (v *Vertex) Scale(f float64) {
+	v.X = v.X * f
+	v.Y = v.Y * f
+}
+```
+
+### 方法与指针重定向
+
+1. 以指针为接收者的方法被调用时，接收者既能为值又能为指针
+
+```go
+// Go 会将语句 v.Scale(5) 解释为 (&v).Scale(5)
+var v Vertex
+v.Scale(5)  // OK
+p := &v
+p.Scale(10) // OK
+```
+
+2. 以值为接收者的方法被调用时，接收者既能为值又能为指针
+
+```go
+// p.Abs() 会被解释为 (*p).Abs()
+var v Vertex
+fmt.Println(v.Abs()) // OK
+p := &v
+fmt.Println(p.Abs()) // OK
+```
+
+## 接口
+
+1. `接口类型` 是由一组方法签名定义的集合。
+2. 类型通过实现一个接口的所有方法来实现该接口。既然无需专门显式声明，也就没有“implements”关键字。
 
 ## 并发

@@ -33,3 +33,23 @@ beginners]([The Linux command line for beginners | Ubuntu](https://ubuntu.com/tu
 ## [uni-app](https://uniapp.dcloud.net.cn/resource.html)
 
 [小兔鲜儿微信小程序](https://www.bilibili.com/video/BV1Bp4y1379L/?p=1&vd_source=8e409861a3dbd4f03621a69033845ed3)
+
+## restful
+
+## interface 和 type 区别
+
+1. 关键区别在于不能重新开放类型以添加新的属性，而接口始终是可扩展的。
+2. 类型别名不能参与 `声明合并`，但接口可以。
+3. 接口只能用于 `声明对象的形状`，不能重命名基本类型.
+
+|                           |           |            |
+| :------------------------ | :-------: | :--------: |
+|                           | interface | type alias |
+| describe object           |    ✔️     |     ❌     |
+| extend                    |    ✔️     |     ❌     |
+| class implement           |    ✔️     |     ❌     |
+| declaration merging       |    ✔️     |     ❌     |
+| composite types           |    ❌     |     ✔️     |
+| declaration function      |    ❌     |     ✔️     |
+| more than object types    |    ❌     |     ✔️     |
+| with typeof type operator |    ❌     |     ✔️     |
